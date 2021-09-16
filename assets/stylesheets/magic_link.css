@@ -1,0 +1,15 @@
+#admin-menu a.magic-link-rules {
+    background-image: url(../images/icons8-mail-64.png);
+    background-size: 16px;
+}
+
+.icon-magic-link-rules {
+    background-image: url(../images/icons8-mail-64.png);
+    background-size: 16px;
+    padding-left: 25px;
+    background-repeat: no-repeat;
+}
+
+#magic_link_rule .value {
+    font-weight: bold;
+}

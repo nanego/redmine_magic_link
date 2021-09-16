@@ -1,3 +1,5 @@
+require 'redmine_magic_link/hooks'
+
 ActiveSupport::Reloader.to_prepare do
   # require_dependency 'redmine_magic_link/controllers/...'
   # require_dependency 'redmine_magic_link/models/...'
@@ -11,4 +13,7 @@ Redmine::Plugin.register :redmine_magic_link do
   url 'https://github.com/nanego/redmine_magic_link'
   requires_redmine_plugin :redmine_base_rspec, :version_or_higher => '0.0.4' if Rails.env.test?
   requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
+  menu :admin_menu, :magic_link_rules, { :controller => 'magic_link_rules', :action => 'index' },
+       :caption => :label_magic_links,
+       :html => {:class => 'icon'}
 end

@@ -1,0 +1,47 @@
+<% html_title(l(:label_magic_link_rules)) %>
+
+<div class="contextual">
+  <%= link_to(l(:label_new_magic_link_rule),
+              { :controller => 'magic_link_rules', :action => 'new' },
+              :class => 'icon icon-add', :method => :get) %>
+</div>
+
+<h2><span class="icon icon-magic-link-rules"><%= h "#{l(:label_magic_link_rules)}" %></span></h2>
+
+<% if @notice %>
+  <div class="flash notice"><%= @notice %></div>
+<% end %>
+
+<% if @rules.empty? %>
+  <div class="rules_box">
+    <%= l(:no_magic_link_rules) %>
+  </div>
+<% else %>
+
+  <div class="rules_box">
+
+    <table class="list rules" id="rules_list">
+      <thead>
+      <tr>
+        <th><%= l(:label_enabled) %></th>
+        <th class="rule_contact_custom_field"><%= l(:field_contact_custom_field) %></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @rules.each do |rule| %>
+        <tr class="rule">
+          <td><span class="<%= rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>"></span></td>
+          <td><%= rule.contact_custom_field.name %></td>
+
+          <td class="buttons">
+            <%= link_to l(:button_edit), edit_magic_link_rule_path(id: rule.id), :class => 'icon icon-edit' %>
+            <%= delete_link magic_link_rule_path(rule) %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+<% end %>
