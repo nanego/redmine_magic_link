@@ -1,7 +1,5 @@
 require "spec_helper"
 require "active_support/testing/assertions"
-# require 'redmine_magic_link/issues_controller_patch.rb'
-# require 'redmine_magic_link/issue_patch.rb'
 
 describe IssuesController, type: :controller do
 
@@ -25,18 +23,19 @@ describe IssuesController, type: :controller do
     @request.session[:user_id] = 2
     Setting.plain_text_mail = 0
     Setting.default_language = 'en'
+    MagicLinkRule.update_all(enabled: true)
   end
 
   it "should send a notification including magic-link after create" do
     ActionMailer::Base.deliveries.clear
 
     assert_difference 'Issue.count' do
-      post :create, params: {:project_id => 1,
-                             :issue => {:tracker_id => 3,
-                                        :subject => 'This is the test_new issue',
-                                        :description => 'This is the description',
-                                        :priority_id => 5,
-                                        :custom_field_values => {'2' => 'non_member_contact@example.net'}}}
+      post :create, params: { :project_id => 1,
+                              :issue => { :tracker_id => 3,
+                                          :subject => 'This is the test_new issue',
+                                          :description => 'This is the description',
+                                          :priority_id => 5,
+                                          :custom_field_values => { '2' => 'non_member_contact@example.net' } } }
     end
 
     new_issue = Issue.last
@@ -61,6 +60,37 @@ describe IssuesController, type: :controller do
     end
   end
 
-  pending "should send a notification including magic-link after update"
+  it "should send a notification including magic-link after update" do
+    ActionMailer::Base.deliveries.clear
+
+    assert_difference 'Journal.count' do
+      assert_difference('JournalDetail.count', 2) do
+        put :update, params: { :id => 1,
+                               :issue => {
+                                 status_id: '5', # close issue
+                                 custom_field_values: { '2' => 'other_contact@example.net' }
+                               } }
+      end
+    end
+    expect(ActionMailer::Base.deliveries.size).to eq 3 # 2 standards + 1
+
+    updated_issue = Issue.find(1)
+    default_mail = ActionMailer::Base.deliveries.second
+    mail_with_magic_link = ActionMailer::Base.deliveries.first
+
+    expect(default_mail['bcc'].value).to include User.find(2).mail
+    expect(default_mail['bcc'].value).to_not include "other_contact@example.net"
+    default_mail.parts.each do |part|
+      expect(part.body.raw_source).to include "has been updated by"
+      expect(part.body.raw_source).to_not include "?key=#{updated_issue.magic_link_hash}"
+    end
+
+    expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
+    expect(mail_with_magic_link['bcc'].value).to include "other_contact@example.net"
+    mail_with_magic_link.parts.each do |part|
+      expect(part.body.raw_source).to include "has been updated by"
+      expect(part.body.raw_source).to include "?key=#{updated_issue.magic_link_hash}"
+    end
+  end
 
 end

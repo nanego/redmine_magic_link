@@ -7,11 +7,10 @@ class Issue < ActiveRecord::Base
 
   has_many :magic_link_histories
 
-  after_create_commit :send_magic_links_after_create
+  after_create_commit :send_magic_links
 
-  def send_magic_links_after_create
+  def send_magic_links
     MagicLinkRule.active.each do |magic_link_rule|
-
       contact_custom_field = magic_link_rule.contact_custom_field
       if self.available_custom_fields.include?(contact_custom_field)
         recipient = self.custom_value_for(contact_custom_field).value
@@ -19,7 +18,6 @@ class Issue < ActiveRecord::Base
           Mailer.deliver_issue_add_with_magic_link(self, recipient)
         end
       end
-
     end
   end
 

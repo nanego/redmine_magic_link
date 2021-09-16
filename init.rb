@@ -3,6 +3,7 @@ require 'redmine_magic_link/hooks'
 ActiveSupport::Reloader.to_prepare do
   require_dependency 'redmine_magic_link/issue_patch'
   require_dependency 'redmine_magic_link/mailer_patch'
+  require_dependency 'redmine_magic_link/journal_patch'
 end
 
 Redmine::Plugin.register :redmine_magic_link do
