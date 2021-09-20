@@ -51,6 +51,7 @@ describe IssuesController, type: :controller do
 
       expect(ActionMailer::Base.deliveries.size).to eq 3
       expect(new_issue_magic_link_rule.issue).to eq new_issue
+      expect(new_issue.magic_link_hashes(new_issue_magic_link_rule))
 
       default_mail = ActionMailer::Base.deliveries.second
       expect(default_mail['bcc'].value).to include User.find(2).mail
@@ -131,7 +132,7 @@ describe IssuesController, type: :controller do
       get :show, params: { :id => 1, issue_key: "AZERTY" }
 
       expect(user.reload.roles_for_project(project).map(&:id)).to eq [1, 2]
-      assert_response 200 # Success
+      expect(response).to redirect_to('/issues/1')
     end
 
   end

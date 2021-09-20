@@ -30,7 +30,7 @@ class Issue < ActiveRecord::Base
   end
 
   def self.random_magic_link_hash
-    Redmine::Utils.random_hex(32)
+    Redmine::Utils.random_hex(32).parameterize
   end
 
   def add_magic_link_hash(magic_link_rule)
