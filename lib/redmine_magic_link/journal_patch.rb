@@ -12,7 +12,7 @@ class Journal < ActiveRecord::Base
         if updated_issue.available_custom_fields.include?(contact_custom_field)
           recipient = updated_issue.custom_value_for(contact_custom_field).value
           if recipient.present?
-            Mailer.deliver_issue_edit_with_magic_link(updated_issue, self, recipient)
+            Mailer.deliver_issue_edit_with_magic_link(updated_issue, self, recipient, magic_link_rule)
           end
         end
       end

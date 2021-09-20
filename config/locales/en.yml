@@ -12,3 +12,4 @@ en:
   label_update_magic_link_rule: "Modify this rule"
   label_enabled_rule: "Activated"
   field_contact_custom_field: "Recipient"
+  field_new_member_role: "New members role"

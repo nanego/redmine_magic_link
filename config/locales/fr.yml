@@ -12,3 +12,4 @@ fr:
   label_update_magic_link_rule: "Modifier cette règle"
   label_enabled_rule: "Activé"
   field_contact_custom_field: "Destinataire"
+  field_new_member_role: "Rôle attribué aux nouveaux membres"
