@@ -195,6 +195,26 @@ describe IssuesController, type: :controller do
 
     end
 
+    it "should NOT allow to see the issue if magic link is correct BUT rule is disabled" do
+      MagicLinkRule.where(id: 1).update(enabled: false)
+      expect(user.roles_for_project(project).map(&:id)).to eq [1]
+
+      IssueMagicLinkRule.create(issue_id: 1, magic_link_rule_id: 1, magic_link_hash: "AZERTY")
+      assert_difference 'MagicLinkHistory.count', 1 do
+        get :show, params: { :id => 1, issue_key: "AZERTY" }
+      end
+
+      expect(user.reload.roles_for_project(project).map(&:id)).to eq [1]
+      expect(response).to redirect_to('/issues/1')
+
+      # New log entry
+      history = MagicLinkHistory.last
+      expect(history.magic_link_rule_id).to eq 1
+      expect(history.issue_id).to eq 1
+      expect(history.user_id).to eq 2
+      expect(history.description).to include "Link used by: John Smith"
+    end
+
   end
 
 end

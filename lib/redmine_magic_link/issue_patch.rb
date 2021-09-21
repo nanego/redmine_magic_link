@@ -22,7 +22,7 @@ class Issue < ActiveRecord::Base
 
   def create_new_membership_with_magic_link(user, magic_link_hash)
     issue_magic_link_rule = IssueMagicLinkRule.where(magic_link_hash: magic_link_hash).first
-    if issue_magic_link_rule.present? && issue_magic_link_rule.issue == self
+    if issue_magic_link_rule.present? && issue_magic_link_rule.issue == self && issue_magic_link_rule.magic_link_rule.enabled
       member = Member.find_or_initialize_by(user: user, project: self.project)
       member.roles << issue_magic_link_rule.magic_link_rule.role
       member.save
