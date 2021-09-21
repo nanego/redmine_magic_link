@@ -26,6 +26,7 @@ class Issue < ActiveRecord::Base
       member = Member.find_or_initialize_by(user: user, project: self.project)
       member.roles << issue_magic_link_rule.magic_link_rule.role
       member.save
+      issue_magic_link_rule.magic_link_rule.log_added_role(user, self, issue_magic_link_rule.magic_link_rule.role)
     end
   end
 

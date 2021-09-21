@@ -13,3 +13,5 @@ fr:
   label_enabled_rule: "Activé"
   field_contact_custom_field: "Destinataire"
   field_new_member_role: "Rôle attribué aux nouveaux membres"
+  label_magic_link_histories: "Logs"
+  no_magic_link_histories: "Aucun événement n'a été enregistré"

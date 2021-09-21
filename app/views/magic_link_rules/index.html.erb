@@ -4,6 +4,9 @@
   <%= link_to(l(:label_new_magic_link_rule),
               { :controller => 'magic_link_rules', :action => 'new' },
               :class => 'icon icon-add', :method => :get) %>
+  <%= link_to(l(:label_magic_link_histories),
+              { :controller => 'magic_link_histories', :action => 'index' },
+              :class => 'icon icon-list', :method => :get) %>
 </div>
 
 <h2><span class="icon icon-magic-link-rules"><%= h "#{l(:label_magic_link_rules)}" %></span></h2>
@@ -25,6 +28,7 @@
       <tr>
         <th><%= l(:label_enabled) %></th>
         <th class="rule_contact_custom_field"><%= l(:field_contact_custom_field) %></th>
+        <th><%= l(:field_role) %></th>
         <th></th>
       </tr>
       </thead>
@@ -33,7 +37,7 @@
         <tr class="rule">
           <td><span class="<%= rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>"></span></td>
           <td><%= rule.contact_custom_field.name %></td>
-
+          <td><%= rule.role %></td>
           <td class="buttons">
             <%= link_to l(:button_edit), edit_magic_link_rule_path(id: rule.id), :class => 'icon icon-edit' %>
             <%= delete_link magic_link_rule_path(rule) %>

@@ -4,6 +4,7 @@ class CreateMagicLinkHistories < ActiveRecord::Migration[5.2]
       t.integer :magic_link_rule_id
       t.integer :issue_id
       t.text :description
+      t.timestamps null: false
     end
   end
 end

@@ -1,0 +1,44 @@
+<% html_title(l(:label_magic_link_histories)) %>
+
+<h2><span class="icon icon-magic-link-rules"><%= link_to "#{l(:label_magic_link_rules)}", magic_link_rules_path %> / <%= h "#{l(:label_magic_link_histories)}" %></span></h2>
+
+<% if @notice %>
+  <div class="flash notice"><%= @notice %></div>
+<% end %>
+
+<% if @histories.empty? %>
+  <div class="histories_box">
+    <%= l(:no_magic_link_histories) %>
+  </div>
+<% else %>
+
+  <div class="histories_box">
+
+    <table class="list histories" id="histories_list">
+      <thead>
+      <tr>
+        <th><%= l(:label_date) %></th>
+        <th><%= l(:label_magic_link_rule) %></th>
+        <th><%= l(:label_issue) %></th>
+        <th><%= l(:label_user) %></th>
+        <th><%= l(:field_description) %></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @histories.each do |history| %>
+        <tr class="history">
+          <td><%= history.created_at %></td>
+          <td><%= link_to "#{l('label_magic_link_rule')} ##{history.magic_link_rule.id}" , magic_link_rule_path(history.magic_link_rule) %></td>
+          <td><%= link_to_issue history.issue %></td>
+          <td><%= link_to_user history.user %></td>
+          <td><%= history.description %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <span class="pagination"><%= pagination_links_full @histories_pages, @histories_count %></span>
+
+  </div>
+
+<% end %>

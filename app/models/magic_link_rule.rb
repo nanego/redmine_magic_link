@@ -12,4 +12,20 @@ class MagicLinkRule < ActiveRecord::Base
 
   scope :active, -> { where(enabled: true) }
 
+  def log_new_link_sent(issue, address)
+    self.magic_link_histories.create!(issue: issue, description: "New link sent to: #{address}")
+  end
+
+  def log_link_sent(issue, address)
+    self.magic_link_histories.create!(issue: issue, description: "Link sent to: #{address}")
+  end
+
+  def log_used_link(user, issue)
+    self.magic_link_histories.create!(issue: issue, description: "Link used by: #{user}", user: user)
+  end
+
+  def log_added_role(user, issue, role)
+    self.magic_link_histories.create!(issue: issue, description: "Role #{role} assigned to user #{user}", user: user)
+  end
+
 end

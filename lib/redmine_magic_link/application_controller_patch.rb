@@ -14,6 +14,7 @@ module PluginMagicLink
         if issue_rule.present? && issue_rule.issue_id == params[:id].to_i
           issue = Issue.find(params[:id])
           issue.create_new_membership_with_magic_link(User.current, params[:issue_key]) unless issue.visible?(User.current)
+          issue_rule.magic_link_rule.log_used_link(User.current, issue)
           redirect_to issue_path(id: params[:id])
         end
       end

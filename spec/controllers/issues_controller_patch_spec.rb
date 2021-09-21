@@ -28,8 +28,8 @@ describe IssuesController, type: :controller do
   end
 
   let!(:user) { User.find(2) }
-  let!(:issue) {Issue.find(1)}
-  let!(:project) {Project.find(1)}
+  let!(:issue) { Issue.find(1) }
+  let!(:project) { Project.find(1) }
 
   describe "New issue notification with magic link" do
     it "should send a notification including magic-link after create" do
@@ -69,6 +69,31 @@ describe IssuesController, type: :controller do
         expect(part.body.raw_source).to include "?issue_key=#{new_issue_magic_link_rule.magic_link_hash}"
       end
     end
+
+    it "should log every magic link sent after create" do
+
+      assert_difference 'MagicLinkHistory.count' do
+        assert_difference 'Issue.count' do
+          post :create, params: { :project_id => 1,
+                                  :issue => { :tracker_id => 3,
+                                              :subject => 'This is the test_new issue',
+                                              :description => 'This is the description',
+                                              :priority_id => 5,
+                                              :custom_field_values => { '2' => 'non_member_contact@example.net' } } }
+        end
+      end
+
+      new_issue = Issue.last
+      magic_link_rule = MagicLinkRule.first
+      history = MagicLinkHistory.last
+
+      expect(response).to redirect_to(:controller => 'issues', :action => 'show', :id => new_issue.id)
+
+      # New log entry
+      expect(history.magic_link_rule).to eq magic_link_rule
+      expect(history.issue).to eq new_issue
+      expect(history.description).to include "New link sent to: non_member_contact@example.net"
+    end
   end
 
   describe "Edit issue notification with magic link" do
@@ -105,6 +130,31 @@ describe IssuesController, type: :controller do
         expect(part.body.raw_source).to include "?issue_key=#{issue_magic_link_rule.magic_link_hash}"
       end
     end
+
+    it "should log every link sent after update" do
+
+      assert_difference 'MagicLinkHistory.count' do
+        assert_difference 'Journal.count' do
+          assert_difference('JournalDetail.count', 2) do
+            put :update, params: { :id => 1,
+                                   :issue => {
+                                     status_id: '5', # close issue
+                                     custom_field_values: { '2' => 'other_contact@example.net' }
+                                   } }
+          end
+        end
+      end
+
+      updated_issue = Issue.find(1)
+      magic_link_rule = MagicLinkRule.first
+      history = MagicLinkHistory.last
+
+      # New log entry
+      expect(history.magic_link_rule).to eq magic_link_rule
+      expect(history.issue).to eq updated_issue
+      expect(history.description).to include "Link sent to: other_contact@example.net"
+
+    end
   end
 
   describe "Show issue with magic link" do
@@ -129,10 +179,20 @@ describe IssuesController, type: :controller do
       expect(user.roles_for_project(project).map(&:id)).to eq [1]
 
       IssueMagicLinkRule.create(issue_id: 1, magic_link_rule_id: 1, magic_link_hash: "AZERTY")
-      get :show, params: { :id => 1, issue_key: "AZERTY" }
+      assert_difference 'MagicLinkHistory.count', 2 do
+        get :show, params: { :id => 1, issue_key: "AZERTY" }
+      end
 
       expect(user.reload.roles_for_project(project).map(&:id)).to eq [1, 2]
       expect(response).to redirect_to('/issues/1')
+
+      # New log entry
+      history = MagicLinkHistory.last
+      expect(history.magic_link_rule_id).to eq 1
+      expect(history.issue_id).to eq 1
+      expect(history.user_id).to eq 2
+      expect(history.description).to include "Link used by: John Smith"
+
     end
 
   end
