@@ -22,11 +22,12 @@ class Issue < ActiveRecord::Base
 
   def create_new_membership_with_magic_link(user, magic_link_hash)
     issue_magic_link_rule = IssueMagicLinkRule.where(magic_link_hash: magic_link_hash).first
-    if issue_magic_link_rule.present? && issue_magic_link_rule.issue == self && issue_magic_link_rule.magic_link_rule.enabled
+    if issue_magic_link_rule.present? && issue_magic_link_rule.issue == self && issue_magic_link_rule.magic_link_rule&.enabled
       member = Member.find_or_initialize_by(user: user, project: self.project)
       member.roles << issue_magic_link_rule.magic_link_rule.role
       member.save
       issue_magic_link_rule.magic_link_rule.log_added_role(user, self, issue_magic_link_rule.magic_link_rule.role)
+      journalize_member_creation_in_project_history(member: member, role: issue_magic_link_rule.magic_link_rule.role) if Redmine::Plugin.installed?(:redmine_admin_activity)
     end
   end
 
@@ -44,6 +45,16 @@ class Issue < ActiveRecord::Base
 
   def magic_link_hashes(magic_link_rule)
     issue_magic_link_rules.where(magic_link_rule: magic_link_rule).map(&:magic_link_hash)
+  end
+
+  def journalize_member_creation_in_project_history(member:, role:)
+    self.project.init_journal(User.find(599)) # Scripts DIS Paris
+    self.project.current_journal.details <<
+      JournalDetail.new(
+        property: 'members',
+        prop_key: 'member_with_roles',
+        value: "{ \"name\": \"#{member.principal.to_s}\", \"roles\": [\"#{role.name}\"] }")
+    self.project.current_journal.save
   end
 
 end
