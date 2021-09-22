@@ -48,7 +48,8 @@ class Issue < ActiveRecord::Base
   end
 
   def journalize_member_creation_in_project_history(member:, role:)
-    self.project.init_journal(User.find(599)) # Scripts DIS Paris
+    user = User.where(id: 599).first
+    self.project.init_journal(user || User.current)
     self.project.current_journal.details <<
       JournalDetail.new(
         property: 'members',
