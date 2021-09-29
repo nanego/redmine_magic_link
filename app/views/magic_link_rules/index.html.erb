@@ -1,12 +1,12 @@
 <% html_title(l(:label_magic_link_rules)) %>
 
 <div class="contextual">
-  <%= link_to(l(:label_new_magic_link_rule),
-              { :controller => 'magic_link_rules', :action => 'new' },
-              :class => 'icon icon-add', :method => :get) %>
-  <%= link_to(l(:label_magic_link_histories),
-              { :controller => 'magic_link_histories', :action => 'index' },
-              :class => 'icon icon-list', :method => :get) %>
+  <%= link_to l(:label_new_magic_link_rule),
+              new_magic_link_rule_path,
+              :class => 'icon icon-add' %>
+  <%= link_to l(:label_magic_link_histories),
+              magic_link_histories_path,
+              :class => 'icon icon-list' %>
 </div>
 
 <h2><span class="icon icon-magic-link-rules"><%= h "#{l(:label_magic_link_rules)}" %></span></h2>
