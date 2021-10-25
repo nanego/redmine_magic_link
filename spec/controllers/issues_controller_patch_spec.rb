@@ -70,6 +70,54 @@ describe IssuesController, type: :controller do
       end
     end
 
+    it "should send a notification including magic-link after create to multiple recipients if using multiple addresses" do
+      ActionMailer::Base.deliveries.clear
+
+      assert_difference 'Issue.count' do
+        post :create, params: { :project_id => 1,
+                                :issue => { :tracker_id => 3,
+                                            :subject => 'This is the test_new issue',
+                                            :description => 'This is the description',
+                                            :priority_id => 5,
+                                            :custom_field_values => { '2' => 'non_member_contact@example.net,second_ext_contact@example.net' } } }
+      end
+
+      new_issue = Issue.last
+      new_issue_magic_link_rule = IssueMagicLinkRule.last
+
+      expect(response).to redirect_to(:controller => 'issues', :action => 'show', :id => new_issue.id)
+
+      expect(ActionMailer::Base.deliveries.size).to eq 4
+      expect(new_issue_magic_link_rule.issue).to eq new_issue
+      expect(new_issue.magic_link_hashes(new_issue_magic_link_rule))
+
+      default_mail = ActionMailer::Base.deliveries.third
+      expect(default_mail['bcc'].value).to include User.find(2).mail
+      expect(default_mail['bcc'].value).to_not include "non_member_contact@example.net"
+      default_mail.parts.each do |part|
+        expect(part.body.raw_source).to include "has been reported by"
+        expect(part.body.raw_source).to_not include "?issue_key="
+      end
+
+      mail_with_magic_link = ActionMailer::Base.deliveries.first
+      expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
+      expect(mail_with_magic_link['bcc'].value).to include "non_member_contact@example.net"
+      expect(mail_with_magic_link['bcc'].value).to_not include "second_ext_contact@example.net"
+      mail_with_magic_link.parts.each do |part|
+        expect(part.body.raw_source).to include "has been reported by"
+        expect(part.body.raw_source).to include "?issue_key=#{new_issue_magic_link_rule.magic_link_hash}"
+      end
+
+      mail_with_magic_link = ActionMailer::Base.deliveries.second
+      expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
+      expect(mail_with_magic_link['bcc'].value).to_not include "non_member_contact@example.net"
+      expect(mail_with_magic_link['bcc'].value).to include "second_ext_contact@example.net"
+      mail_with_magic_link.parts.each do |part|
+        expect(part.body.raw_source).to include "has been reported by"
+        expect(part.body.raw_source).to include "?issue_key=#{new_issue_magic_link_rule.magic_link_hash}"
+      end
+    end
+
     it "should send a notification including magic-link after create even if nobody else is notified" do
       ActionMailer::Base.deliveries.clear
       project.members.destroy_all

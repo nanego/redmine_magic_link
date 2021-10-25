@@ -4,7 +4,10 @@ class Mailer < ActionMailer::Base
 
   def self.deliver_issue_add_with_magic_link(issue, recipient_address, magic_link_rule)
     magic_link_hash = issue.add_magic_link_hash(magic_link_rule)
-    issue_add_with_magic_link(User.current, recipient_address, issue, magic_link_hash).deliver_later
+    recipients_addresses = recipient_address.split(',')
+    recipients_addresses.each do |address|
+      issue_add_with_magic_link(User.current, address, issue, magic_link_hash).deliver_later
+    end
     magic_link_rule.log_new_link_sent(issue, recipient_address)
   end
 
@@ -28,10 +31,13 @@ class Mailer < ActionMailer::Base
          :subject => subject
   end
 
-  def self.deliver_issue_edit_with_magic_link(issue, journal, recipient, magic_link_rule)
+  def self.deliver_issue_edit_with_magic_link(issue, journal, recipient_address, magic_link_rule)
     magic_link_hash = issue.add_magic_link_hash(magic_link_rule)
-    issue_edit_with_magic_link(User.current, recipient, issue, journal, magic_link_hash).deliver_later
-    magic_link_rule.log_link_sent(issue, recipient)
+    recipients_addresses = recipient_address.split(',')
+    recipients_addresses.each do |address|
+      issue_edit_with_magic_link(User.current, address, issue, journal, magic_link_hash).deliver_later
+    end
+    magic_link_rule.log_link_sent(issue, recipient_address)
   end
 
   # Builds a mail for notifying user about an issue update
