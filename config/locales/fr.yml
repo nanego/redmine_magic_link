@@ -11,6 +11,7 @@ fr:
   label_all_magic_link_rules: "Voir toutes les règles"
   label_update_magic_link_rule: "Modifier cette règle"
   label_enabled_rule: "Activé"
+  label_enabled_rule_for_unregistered_watchers: "Utiliser dans les notifications aux observateurs non inscrits (plugin Unregistered-Watchers)"
   field_contact_custom_field: "Destinataire"
   field_new_member_role: "Rôle attribué aux nouveaux membres"
   label_magic_link_histories: "Logs"

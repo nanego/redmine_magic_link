@@ -23,6 +23,12 @@
                          { label: l(:field_new_member_role), required: true } %>
           </p>
 
+          <% if Redmine::Plugin.installed?(:redmine_unregistered_watchers) %>
+            <p>
+              <%= f.check_box :enabled_for_unregistered_watchers, { label: l(:label_enabled_rule_for_unregistered_watchers) } %>
+            </p>
+          <% end %>
+
         </div>
 
       </div>
