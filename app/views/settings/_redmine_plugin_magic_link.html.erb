@@ -1,0 +1,14 @@
+<p>
+  <%= label_tag l("technical_user") %>
+  <%= select_tag "settings[technical_user]", principals_options_for_select(User.active.sorted, User.where(id: Setting["plugin_redmine_magic_link"]["technical_user"]).first) %>
+</p>
+
+<script>
+    $(function() {
+        if ((typeof $().select2) === 'function') {
+            $('#settings_technical_user').select2({
+                containerCss: {minWidth: '300px'}
+            });
+        }
+    });
+</script>

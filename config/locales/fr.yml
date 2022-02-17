@@ -16,3 +16,4 @@ fr:
   field_new_member_role: "Rôle attribué aux nouveaux membres"
   label_magic_link_histories: "Logs"
   no_magic_link_histories: "Aucun événement n'a été enregistré"
+  technical_user: "Utilisateur technique"

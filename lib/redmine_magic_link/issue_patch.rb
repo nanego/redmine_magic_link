@@ -49,7 +49,7 @@ class Issue < ActiveRecord::Base
   end
 
   def journalize_member_creation_in_project_history(member:, role:)
-    user = User.where(id: 599).first
+    user = User.where(id: Setting["plugin_redmine_magic_link"]["technical_user"]).first
     self.project.init_journal(user || User.current)
     self.project.current_journal.details <<
       JournalDetail.new(

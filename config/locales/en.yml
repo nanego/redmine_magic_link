@@ -16,3 +16,4 @@ en:
   field_new_member_role: "New members role"
   label_magic_link_histories: "Logs"
   no_magic_link_histories: "No event logged"
+  technical_user: Technical user
