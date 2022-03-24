@@ -29,7 +29,7 @@
         <th><%= l(:label_enabled) %></th>
         <th>ID</th>
         <th class="rule_contact_custom_field"><%= l(:field_contact_custom_field) %></th>
-        <th><%= l(:field_role) %></th>
+        <th><%= l(:label_role_plural) %></th>
         <th></th>
       </tr>
       </thead>
@@ -39,7 +39,7 @@
           <td><span class="<%= rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>"></span></td>
           <td><%= rule.id %></td>
           <td><%= rule.contact_custom_field.try(:name) %></td>
-          <td><%= rule.role %></td>
+          <td><%= rule.roles.map(&:name).join(", ") %></td>
           <td class="buttons">
             <%= link_to l(:button_edit), edit_magic_link_rule_path(id: rule.id), :class => 'icon icon-edit' %>
             <%= delete_link magic_link_rule_path(rule) %>

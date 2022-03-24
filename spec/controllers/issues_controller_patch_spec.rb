@@ -25,6 +25,7 @@ describe IssuesController, type: :controller do
     Setting.plain_text_mail = 0
     Setting.default_language = 'en'
     MagicLinkRule.update_all(enabled: true)
+    MagicLinkRule.all.each { |rule| rule.roles = [Role.find(2)]; rule.save }
   end
 
   let!(:user) { User.find(2) }

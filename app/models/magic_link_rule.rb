@@ -3,15 +3,19 @@ class MagicLinkRule < ActiveRecord::Base
   include Redmine::SafeAttributes
 
   safe_attributes "contact_custom_field_id",
-                  "role_id",
                   "enabled",
-                  "enabled_for_unregistered_watchers"
+                  "enabled_for_unregistered_watchers",
+                  "role_ids",
+                  "function_ids"
 
   has_many :magic_link_histories
   has_many :issue_magic_link_rules
   has_many :issues, through: :issue_magic_link_rules
-  belongs_to :role
+  belongs_to :role # Deprecated TODO: Remove after migration to multiple roles
   belongs_to :contact_custom_field, class_name: "CustomField"
+
+  has_and_belongs_to_many :roles
+  has_and_belongs_to_many :functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
 
   scope :active, -> { where(enabled: true) }
 
@@ -35,8 +39,8 @@ class MagicLinkRule < ActiveRecord::Base
     self.magic_link_histories.create!(issue: issue, description: "Link used by: #{user}", user: user)
   end
 
-  def log_added_role(user, issue, role)
-    self.magic_link_histories.create!(issue: issue, description: "Role #{role} assigned to user #{user}", user: user)
+  def log_added_roles(user, issue, roles)
+    self.magic_link_histories.create!(issue: issue, description: "Roles [#{roles.map(&:name).join(', ')}] assigned to user #{user}", user: user)
   end
 
 end

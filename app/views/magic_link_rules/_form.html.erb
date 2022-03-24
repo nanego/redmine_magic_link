@@ -18,10 +18,18 @@
                           { label: l(:field_contact_custom_field), required: false, include_blank: true } %></p>
 
           <p>
-            <%= f.select :role_id,
-                         options_for_select(Role.sorted.map { |s| [s.name, s.id] }, @rule.role_id),
-                         { label: l(:field_new_member_role), required: true } %>
+            <%= f.select :role_ids,
+                         options_for_select(Role.sorted.map { |s| [s.name, s.id] }, @rule.role_ids),
+                         { label: l(:field_new_member_roles), required: true }, { multiple: true } %>
           </p>
+
+          <% if Redmine::Plugin.installed?(:redmine_limited_visibility) %>
+            <p>
+              <%= f.select :function_ids,
+                           options_for_select(Function.sorted.map { |s| [s.name, s.id] }, @rule.function_ids),
+                           { label: l(:field_new_member_functions), required: true }, { multiple: true } %>
+            </p>
+          <% end %>
 
           <% if Redmine::Plugin.installed?(:redmine_unregistered_watchers) %>
             <p>

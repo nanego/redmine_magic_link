@@ -2,5 +2,4 @@ one:
   id: 1
   enabled: false
   contact_custom_field_id: 2
-  role_id: 2
   enabled_for_unregistered_watchers: false

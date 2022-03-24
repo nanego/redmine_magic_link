@@ -13,7 +13,8 @@ en:
   label_enabled_rule: "Activated"
   label_enabled_rule_for_unregistered_watchers: "Use in Unregistered-Watchers notifications"
   field_contact_custom_field: "Recipients"
-  field_new_member_role: "New members role"
+  field_new_member_roles: "New members roles"
+  field_new_member_functions: "New members functions"
   label_magic_link_histories: "Logs"
   no_magic_link_histories: "No event logged"
   technical_user: Technical user
