@@ -25,12 +25,15 @@ class Issue < ActiveRecord::Base
     if issue_magic_link_rule.present? && issue_magic_link_rule.issue == self && issue_magic_link_rule.magic_link_rule&.enabled
       member = Member.find_or_initialize_by(user: user, project: self.project)
       member.roles |= issue_magic_link_rule.magic_link_rule.roles
-      member.functions |= issue_magic_link_rule.magic_link_rule.functions
+      member.functions |= issue_magic_link_rule.magic_link_rule.functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
       member.save
       issue_magic_link_rule.magic_link_rule.log_added_roles(user, self, issue_magic_link_rule.magic_link_rule.roles)
-      journalize_member_creation_in_project_history(member: member,
-                                                    roles: issue_magic_link_rule.magic_link_rule.roles,
-                                                    functions: issue_magic_link_rule.magic_link_rule.functions) if Redmine::Plugin.installed?(:redmine_admin_activity)
+      if Redmine::Plugin.installed?(:redmine_admin_activity)
+        journalize_member_creation_in_project_history(member: member,
+                                                      roles: issue_magic_link_rule.magic_link_rule.roles,
+                                                      functions: Redmine::Plugin.installed?(:redmine_limited_visibility) ? issue_magic_link_rule.magic_link_rule.functions : [])
+
+      end
     end
   end
 
