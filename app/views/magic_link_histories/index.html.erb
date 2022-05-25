@@ -28,7 +28,7 @@
       <% @histories.each do |history| %>
         <tr class="history">
           <td><%= history.created_at %></td>
-          <td><%= link_to "#{l('label_magic_link_rule')} ##{history.magic_link_rule.id}" , edit_magic_link_rule_path(history.magic_link_rule) %></td>
+          <td><%= link_to "#{l('label_magic_link_rule')} ##{history.magic_link_rule_id}" , edit_magic_link_rule_path(history.magic_link_rule) %></td>
           <td><%= history.issue.present? ? link_to_issue(history.issue) : history.issue_id %></td>
           <td><%= history.user.present? ? link_to_user(history.user) : history.user_id %></td>
           <td><%= history.description %></td>
