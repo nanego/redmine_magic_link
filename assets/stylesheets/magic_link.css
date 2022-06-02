@@ -13,3 +13,7 @@
 #magic_link_rule .value {
     font-weight: bold;
 }
+
+.icon-link {
+    background-image: url(../../../images/link.png);
+}

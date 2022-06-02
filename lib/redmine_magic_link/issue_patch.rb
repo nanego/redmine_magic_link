@@ -42,12 +42,12 @@ class Issue < ActiveRecord::Base
   end
 
   def add_magic_link_hash(magic_link_rule)
-    rule = IssueMagicLinkRule.where(issue: self,
-                                    magic_link_rule: magic_link_rule).first_or_initialize
-    rule.magic_link_hash = Issue.random_magic_link_hash unless rule.magic_link_hash.present?
-    if rule.save
-      rule.magic_link_hash
+    rule = IssueMagicLinkRule.where(issue: self, magic_link_rule: magic_link_rule).first_or_initialize
+    if rule.magic_link_hash.blank?
+      rule.magic_link_hash = Issue.random_magic_link_hash
+      rule.save
     end
+    rule.magic_link_hash
   end
 
   def magic_link_hashes(magic_link_rule)

@@ -1,0 +1,26 @@
+<div class=contextual>
+  <%= link_to l(:label_all_magic_link_rules), magic_link_rules_path, class: "icon-magic-link" %>
+</div>
+
+<h2><%= "#{l(:label_magic_link_rule)}" %> #<%= @rule.id %></h2>
+
+<div style="margin: 16px 0">
+  <%= l("label_role_plural") %>: <%= @rule.roles.map(&:name).join(', ') %>
+</div>
+
+<fieldset>
+  <legend><%= l('label_magic_link_by_issue') %></legend>
+  <%= form_tag({ action: :show, controller: :magic_link_rules }, :id => "generate-form", method: :get) do %>
+    <%= label_tag('issue', l(:label_issue_id)) %>:
+    <%= text_field_tag 'issue_id', @issue.try(:id), :size => 10 %>
+    <%= submit_tag(l(:button_generate)) %>
+  <% end %>
+
+  <% if @issue %>
+    <hr>
+    <div>
+      <p><%= link_to_issue(@issue) %></p>
+      <%= l('label_magic_link_by_issue') %> : <p> <b><%= @rule.magic_link_for(issue: @issue) %> </b></p>
+    </div>
+  <% end %>
+</fieldset>

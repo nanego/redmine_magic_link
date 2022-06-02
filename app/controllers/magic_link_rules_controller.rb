@@ -9,6 +9,7 @@ class MagicLinkRulesController < ApplicationController
 
   def show
     @rule = MagicLinkRule.find(params[:id])
+    @issue = Issue.where(id: params[:issue_id]).first if params[:issue_id].present?
   end
 
   def new

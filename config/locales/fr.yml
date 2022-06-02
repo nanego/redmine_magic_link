@@ -18,3 +18,7 @@ fr:
   label_magic_link_histories: "Logs"
   no_magic_link_histories: "Aucun événement n'a été enregistré"
   technical_user: "Utilisateur technique"
+  button_generate_magic_link: "Générer un lien d'auto-enrôlement"
+  label_magic_link_by_issue: "Lien d'auto-enrôlement"
+  label_issue_id: Id de la demande
+  button_generate: Générer

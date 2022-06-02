@@ -43,4 +43,14 @@ class MagicLinkRule < ActiveRecord::Base
     self.magic_link_histories.create!(issue: issue, description: "Roles [#{roles.map(&:name).join(', ')}] assigned to user #{user}", user: user)
   end
 
+  def magic_link_for(issue:)
+    magic_link_hash = issue.add_magic_link_hash(self)
+    Rails.application.routes.url_helpers.url_for(controller: 'issues',
+                                                 action: 'show',
+                                                 id: issue.id,
+                                                 issue_key: magic_link_hash,
+                                                 host: Mailer.default_url_options[:host],
+                                                 only_path: false)
+  end
+
 end

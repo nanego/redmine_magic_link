@@ -18,3 +18,7 @@ en:
   label_magic_link_histories: "Logs"
   no_magic_link_histories: "No event logged"
   technical_user: Technical user
+  button_generate_magic_link: "Generate magic link"
+  label_magic_link_by_issue: "Magic Link by issue"
+  label_issue_id: Issue ID
+  button_generate: Generate

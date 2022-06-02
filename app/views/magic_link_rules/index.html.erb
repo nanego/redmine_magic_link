@@ -41,7 +41,8 @@
           <td><%= rule.contact_custom_field.try(:name) %></td>
           <td><%= rule.roles.map(&:name).join(", ") %></td>
           <td class="buttons">
-            <%= link_to l(:button_edit), edit_magic_link_rule_path(id: rule.id), :class => 'icon icon-edit' %>
+            <%= link_to l(:button_edit), edit_magic_link_rule_path(rule), :class => 'icon icon-edit' %>
+            <%= link_to l(:button_generate_magic_link), magic_link_rule_path(rule), :class => 'icon icon-link' %>
             <%= delete_link magic_link_rule_path(rule) %>
           </td>
         </tr>
