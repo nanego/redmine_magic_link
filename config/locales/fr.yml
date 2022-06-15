@@ -22,3 +22,4 @@ fr:
   label_magic_link_by_issue: "Lien d'auto-enrôlement"
   label_issue_id: Id de la demande
   button_generate: Générer
+  label_set_user_as_watcher: "Rendre tout utilisateur Observateur de la demande"

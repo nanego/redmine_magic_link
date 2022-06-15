@@ -22,3 +22,4 @@ en:
   label_magic_link_by_issue: "Magic Link by issue"
   label_issue_id: Issue ID
   button_generate: Generate
+  label_set_user_as_watcher: "Automatically set user Watcher of the issue"

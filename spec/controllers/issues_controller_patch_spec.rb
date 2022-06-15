@@ -299,6 +299,26 @@ describe IssuesController, type: :controller do
       expect(history.description).to include "Link used by: John Smith"
     end
 
+    describe "set user as watcher" do
+      it "adds the user as watcher when link used" do
+        expect(MagicLinkRule.find(1).set_user_as_watcher).to eq true
+        IssueMagicLinkRule.create(issue_id: 1, magic_link_rule_id: 1, magic_link_hash: "AZERTY")
+        get :show, params: { :id => 1, issue_key: "AZERTY" }
+        expect(response).to redirect_to('/issues/1')
+        # New watcher
+        expect(Issue.find(1).watcher_users).to include(user)
+      end
+
+      it "does NOT add the user as watcher when link used if setting is disabled" do
+        MagicLinkRule.where(id: 1).update(set_user_as_watcher: false)
+        IssueMagicLinkRule.create(issue_id: 1, magic_link_rule_id: 1, magic_link_hash: "AZERTY")
+        get :show, params: { :id => 1, issue_key: "AZERTY" }
+        expect(response).to redirect_to('/issues/1')
+        # No new watcher
+        expect(Issue.find(1).watcher_users).to_not include(user)
+      end
+    end
+
   end
 
 end

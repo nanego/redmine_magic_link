@@ -6,7 +6,8 @@ class MagicLinkRule < ActiveRecord::Base
                   "enabled",
                   "enabled_for_unregistered_watchers",
                   "role_ids",
-                  "function_ids"
+                  "function_ids",
+                  "set_user_as_watcher"
 
   has_many :magic_link_histories
   has_many :issue_magic_link_rules

@@ -19,7 +19,7 @@ module PluginMagicLink
           end
           issue.create_new_membership_with_magic_link(User.current, params[:issue_key]) unless issue.visible?(User.current)
           issue_rule.magic_link_rule.log_used_link(User.current, issue)
-          issue_rule.issue.add_watcher(User.current)
+          issue_rule.issue.add_watcher(User.current) if issue_rule.magic_link_rule.set_user_as_watcher?
           redirect_to issue_path(id: params[:id])
         end
       end
