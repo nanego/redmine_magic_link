@@ -17,6 +17,7 @@ module PluginMagicLink
             issue = Issue.find(params[:id])
           rescue ActiveRecord::RecordNotFound
             render_404
+            return
           end
           if issue.present?
             issue.create_new_membership_with_magic_link(User.current, params[:issue_key]) unless issue.visible?(User.current)
