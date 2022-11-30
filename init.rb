@@ -5,6 +5,9 @@ ActiveSupport::Reloader.to_prepare do
   require_dependency 'redmine_magic_link/mailer_patch'
   require_dependency 'redmine_magic_link/journal_patch'
   require_dependency 'redmine_magic_link/application_controller_patch'
+  require_dependency 'redmine_magic_link/custom_field_patch'
+  require_dependency 'redmine_magic_link/role_patch'
+  require_dependency 'redmine_magic_link/function_patch' if Redmine::Plugin.installed?(:redmine_limited_visibility)
 end
 
 Redmine::Plugin.register :redmine_magic_link do

@@ -17,6 +17,8 @@ class MagicLinkRule < ActiveRecord::Base
 
   has_and_belongs_to_many :roles
   has_and_belongs_to_many :functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
+  validates_presence_of :roles
+  validates_presence_of :functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
 
   scope :active, -> { where(enabled: true) }
 
