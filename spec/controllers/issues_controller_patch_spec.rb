@@ -19,6 +19,8 @@ describe IssuesController, type: :controller do
            :queries, :repositories, :changesets, :projects,
            :magic_link_rules
 
+  fixtures :functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
+
   before do
     User.current = User.find(2)
     @request.session[:user_id] = 2
@@ -280,7 +282,12 @@ describe IssuesController, type: :controller do
     end
 
     it "should NOT allow to see the issue if magic link is correct BUT rule is disabled" do
-      MagicLinkRule.where(id: 1).update(enabled: false)
+      magik_link_test = MagicLinkRule.find(1)
+      magik_link_test.enabled =  false
+      
+      magik_link_test.function_ids = [ Function.find(1).id ] if Redmine::Plugin.installed?(:redmine_limited_visibility)
+      magik_link_test.save
+
       expect(user.roles_for_project(project).map(&:id)).to eq [1]
 
       IssueMagicLinkRule.create(issue_id: 1, magic_link_rule_id: 1, magic_link_hash: "AZERTY")
@@ -310,7 +317,11 @@ describe IssuesController, type: :controller do
       end
 
       it "does NOT add the user as watcher when link used if setting is disabled" do
-        MagicLinkRule.where(id: 1).update(set_user_as_watcher: false)
+        magik_link_test = MagicLinkRule.find(1)
+        magik_link_test.set_user_as_watcher = false
+        magik_link_test.function_ids = [ Function.find(1).id ] if Redmine::Plugin.installed?(:redmine_limited_visibility)
+        magik_link_test.save
+        
         IssueMagicLinkRule.create(issue_id: 1, magic_link_rule_id: 1, magic_link_hash: "AZERTY")
         get :show, params: { :id => 1, issue_key: "AZERTY" }
         expect(response).to redirect_to('/issues/1')
