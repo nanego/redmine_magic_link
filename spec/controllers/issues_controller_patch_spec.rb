@@ -26,6 +26,7 @@ describe IssuesController, type: :controller do
     Setting.default_language = 'en'
     MagicLinkRule.update_all(enabled: true)
     MagicLinkRule.all.each { |rule| rule.roles = [Role.find(2)]; rule.save }
+    Setting.bcc_recipients = '0' if Redmine::VERSION::MAJOR < 5
   end
 
   let!(:user) { User.find(2) }
@@ -55,16 +56,16 @@ describe IssuesController, type: :controller do
       expect(new_issue.magic_link_hashes(new_issue_magic_link_rule))
 
       default_mail = ActionMailer::Base.deliveries.second
-      expect(default_mail['bcc'].value).to include User.find(2).mail
-      expect(default_mail['bcc'].value).to_not include "non_member_contact@example.net"
+      expect(default_mail['to'].value).to include User.find(2).mail
+      expect(default_mail['to'].value).to_not include "non_member_contact@example.net"
       default_mail.parts.each do |part|
         expect(part.body.raw_source).to include "has been reported by"
         expect(part.body.raw_source).to_not include "?issue_key="
       end
 
       mail_with_magic_link = ActionMailer::Base.deliveries.first
-      expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
-      expect(mail_with_magic_link['bcc'].value).to include "non_member_contact@example.net"
+      expect(mail_with_magic_link['to'].value).to_not include User.find(2).mail
+      expect(mail_with_magic_link['to'].value).to include "non_member_contact@example.net"
       mail_with_magic_link.parts.each do |part|
         expect(part.body.raw_source).to include "has been reported by"
         expect(part.body.raw_source).to include "?issue_key=#{new_issue_magic_link_rule.magic_link_hash}"
@@ -93,26 +94,26 @@ describe IssuesController, type: :controller do
       expect(new_issue.magic_link_hashes(new_issue_magic_link_rule))
 
       default_mail = ActionMailer::Base.deliveries.third
-      expect(default_mail['bcc'].value).to include User.find(2).mail
-      expect(default_mail['bcc'].value).to_not include "non_member_contact@example.net"
+      expect(default_mail['to'].value).to include User.find(2).mail
+      expect(default_mail['to'].value).to_not include "non_member_contact@example.net"
       default_mail.parts.each do |part|
         expect(part.body.raw_source).to include "has been reported by"
         expect(part.body.raw_source).to_not include "?issue_key="
       end
 
       mail_with_magic_link = ActionMailer::Base.deliveries.first
-      expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
-      expect(mail_with_magic_link['bcc'].value).to include "non_member_contact@example.net"
-      expect(mail_with_magic_link['bcc'].value).to_not include "second_ext_contact@example.net"
+      expect(mail_with_magic_link['to'].value).to_not include User.find(2).mail
+      expect(mail_with_magic_link['to'].value).to include "non_member_contact@example.net"
+      expect(mail_with_magic_link['to'].value).to_not include "second_ext_contact@example.net"
       mail_with_magic_link.parts.each do |part|
         expect(part.body.raw_source).to include "has been reported by"
         expect(part.body.raw_source).to include "?issue_key=#{new_issue_magic_link_rule.magic_link_hash}"
       end
 
       mail_with_magic_link = ActionMailer::Base.deliveries.second
-      expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
-      expect(mail_with_magic_link['bcc'].value).to_not include "non_member_contact@example.net"
-      expect(mail_with_magic_link['bcc'].value).to include "second_ext_contact@example.net"
+      expect(mail_with_magic_link['to'].value).to_not include User.find(2).mail
+      expect(mail_with_magic_link['to'].value).to_not include "non_member_contact@example.net"
+      expect(mail_with_magic_link['to'].value).to include "second_ext_contact@example.net"
       mail_with_magic_link.parts.each do |part|
         expect(part.body.raw_source).to include "has been reported by"
         expect(part.body.raw_source).to include "?issue_key=#{new_issue_magic_link_rule.magic_link_hash}"
@@ -146,8 +147,8 @@ describe IssuesController, type: :controller do
       expect(new_issue.magic_link_hashes(new_issue_magic_link_rule))
 
       mail_with_magic_link = ActionMailer::Base.deliveries.first
-      expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
-      expect(mail_with_magic_link['bcc'].value).to include "non_member_contact@example.net"
+      expect(mail_with_magic_link['to'].value).to_not include User.find(2).mail
+      expect(mail_with_magic_link['to'].value).to include "non_member_contact@example.net"
       mail_with_magic_link.parts.each do |part|
         expect(part.body.raw_source).to include "has been reported by"
         expect(part.body.raw_source).to include "?issue_key=#{new_issue_magic_link_rule.magic_link_hash}"
@@ -193,6 +194,7 @@ describe IssuesController, type: :controller do
                                  } }
         end
       end
+
       expect(ActionMailer::Base.deliveries.size).to eq 3 # 2 standards + 1
 
       updated_issue = Issue.find(1)
@@ -200,15 +202,15 @@ describe IssuesController, type: :controller do
       default_mail = ActionMailer::Base.deliveries.second
       mail_with_magic_link = ActionMailer::Base.deliveries.first
 
-      expect(default_mail['bcc'].value).to include User.find(2).mail
-      expect(default_mail['bcc'].value).to_not include "other_contact@example.net"
+      expect(default_mail['to'].value).to include User.find(2).mail
+      expect(default_mail['to'].value).to_not include "other_contact@example.net"
       default_mail.parts.each do |part|
         expect(part.body.raw_source).to include "has been updated by"
         expect(part.body.raw_source).to_not include "issue_key="
       end
 
-      expect(mail_with_magic_link['bcc'].value).to_not include User.find(2).mail
-      expect(mail_with_magic_link['bcc'].value).to include "other_contact@example.net"
+      expect(mail_with_magic_link['to'].value).to_not include User.find(2).mail
+      expect(mail_with_magic_link['to'].value).to include "other_contact@example.net"
       mail_with_magic_link.parts.each do |part|
         expect(part.body.raw_source).to include "has been updated by"
         expect(part.body.raw_source).to include "?issue_key=#{issue_magic_link_rule.magic_link_hash}"

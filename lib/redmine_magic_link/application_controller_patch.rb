@@ -1,7 +1,7 @@
 require_dependency 'application_controller'
 
-module PluginMagicLink
-  module ApplicationController
+module RedmineMagicLink
+  module ApplicationControllerPatch
 
     def check_twofa_activation
       super
@@ -32,4 +32,4 @@ module PluginMagicLink
   end
 end
 
-ApplicationController.prepend PluginMagicLink::ApplicationController
+ApplicationController.prepend RedmineMagicLink::ApplicationControllerPatch
