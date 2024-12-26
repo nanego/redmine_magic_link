@@ -53,7 +53,7 @@ module RedmineMagicLink
   end
 end
 
-class Issue < ActiveRecord::Base
+class Issue
 
   prepend RedmineMagicLink::IssuePatch
 

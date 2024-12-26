@@ -21,7 +21,7 @@ module RedmineMagicLink
   end
 end
 
-class Journal < ActiveRecord::Base
+class Journal
 
   prepend RedmineMagicLink::JournalPatch
 
