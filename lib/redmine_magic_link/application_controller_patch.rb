@@ -11,7 +11,10 @@ module RedmineMagicLink
     def create_membership_if_magic_link_used
       if params[:controller] == 'issues' && params[:action] == 'show' && params[:id].present? && params[:issue_key].present?
         issue_rule = IssueMagicLinkRule.where(magic_link_hash: params[:issue_key]).first
-        if issue_rule.present? && issue_rule.issue_id == params[:id].to_i
+        if issue_rule.present? &&
+          issue_rule.issue_id == params[:id].to_i &&
+          issue_rule.magic_link_rule.present? &&
+          issue_rule.magic_link_rule.enabled?
 
           begin
             issue = Issue.find(params[:id])
