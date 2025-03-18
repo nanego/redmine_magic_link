@@ -13,8 +13,7 @@ module RedmineMagicLink
         issue_rule = IssueMagicLinkRule.where(magic_link_hash: params[:issue_key]).first
         if issue_rule.present? &&
           issue_rule.issue_id == params[:id].to_i &&
-          issue_rule.magic_link_rule.present? &&
-          issue_rule.magic_link_rule.enabled?
+          issue_rule.magic_link_rule.present?
 
           begin
             issue = Issue.find(params[:id])
