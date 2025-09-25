@@ -1,9 +1,9 @@
-class AddMissingIndexes < ActiveRecord::Migration[7.2]
+class AddMissingIndexes < ActiveRecord::Migration[6.1]
   def change
 
     if Redmine::Plugin.installed?(:redmine_limited_visibility)
       add_index :functions_magic_link_rules, :function_id, if_not_exists: true
-      add_index :functions_magic_link_rules, [:function_id, :magic_link_rule_id], if_not_exists: true
+      add_index :functions_magic_link_rules, [:function_id, :magic_link_rule_id], if_not_exists: true, name: "index_functions_rules_on_function_id_and_magic_link_rule_id"
     end
 
     add_index :issue_magic_link_rules, :issue_id, if_not_exists: true
