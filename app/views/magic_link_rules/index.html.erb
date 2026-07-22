@@ -1,12 +1,10 @@
 <% html_title(l(:label_magic_link_rules)) %>
 
 <div class="contextual">
-  <%= link_to l(:label_new_magic_link_rule),
-              new_magic_link_rule_path,
-              :class => 'icon icon-add' %>
-  <%= link_to l(:label_magic_link_histories),
-              magic_link_histories_path,
-              :class => 'icon icon-list' %>
+  <%= link_to sprite_icon('add', l(:label_new_magic_link_rule)),
+              new_magic_link_rule_path %>
+  <%= link_to sprite_icon('list', l(:label_magic_link_histories)),
+              magic_link_histories_path %>
 </div>
 
 <h2><span class="icon icon-magic-link-rules"><%= h "#{l(:label_magic_link_rules)}" %></span></h2>
@@ -36,13 +34,13 @@
       <tbody>
       <% @rules.each do |rule| %>
         <tr class="rule">
-          <td><span class="<%= rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>"></span></td>
+          <td><span class="<%= rule.enabled ? 'icon icon-ok' : 'icon icon-error' %>"><%= rule.enabled ? sprite_icon('checked') : sprite_icon('close') %></span></td>
           <td><%= rule.id %></td>
           <td><%= rule.contact_custom_field.try(:name) %></td>
           <td><%= rule.roles.map(&:name).join(", ") %></td>
           <td class="buttons">
-            <%= link_to l(:button_edit), edit_magic_link_rule_path(rule), :class => 'icon icon-edit' %>
-            <%= link_to l(:button_generate_magic_link), magic_link_rule_path(rule), :class => 'icon icon-link' %>
+            <%= link_to sprite_icon('edit', l(:button_edit)), edit_magic_link_rule_path(rule) %>
+            <%= link_to sprite_icon('link', l(:button_generate_magic_link)), magic_link_rule_path(rule) %>
             <%= delete_link magic_link_rule_path(rule) %>
           </td>
         </tr>
