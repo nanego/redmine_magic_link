@@ -10,7 +10,8 @@ Redmine::Plugin.register :redmine_magic_link do
   requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
   menu :admin_menu, :magic_link_rules, { :controller => 'magic_link_rules', :action => 'index' },
        :caption => :label_magic_links,
-       :html => {:class => 'icon'}
+       :icon => 'link',
+       :html => {:class => 'icon icon-link'}
   settings :default => { 'technical_user' => nil},
            :partial => 'settings/redmine_plugin_magic_link'
 end

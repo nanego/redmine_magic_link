@@ -1,6 +1,6 @@
 <% html_title(l(:label_magic_link_histories)) %>
 
-<h2><span class="icon icon-magic-link-rules"><%= link_to "#{l(:label_magic_link_rules)}", magic_link_rules_path %> / <%= h "#{l(:label_magic_link_histories)}" %></span></h2>
+<h2 class="icon"><%= sprite_icon('link') %><span class="icon-label"><%= link_to "#{l(:label_magic_link_rules)}", magic_link_rules_path %> / <%= h "#{l(:label_magic_link_histories)}" %></span></h2>
 
 <% if @notice %>
   <div class="flash notice"><%= @notice %></div>
